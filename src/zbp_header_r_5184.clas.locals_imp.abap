@@ -71,23 +71,19 @@ CLASS lhc_Header IMPLEMENTATION.
     LOOP AT headers INTO DATA(header).
 
       IF update_requested = abap_true.
-        "Revisar si tiene permisos.
-        IF lv_technical_name = 'CB9980005184'."AND header-Country EQ 'Honduras'.
+        IF lv_technical_name = 'CB9980005184'.
           update_granted = abap_true.
         ELSE.
           update_granted = abap_false.
-          "Enviar mensaje que no tiene permiso de edicion para ese pais.
         ENDIF.
       ENDIF.
 
       "Delete
       IF delete_requested = abap_true.
-        "Revisar si tiene permisos.
-        IF lv_technical_name = 'CB9980005184'. "AND header-Country EQ 'Honduras'.
+        IF lv_technical_name = 'CB9980005184'.
           delete_granted = abap_true.
         ELSE.
           delete_granted = abap_false.
-          "Enviar mensaje que no tiene permiso de edicion para ese pais.
         ENDIF.
       ENDIF.
 
@@ -113,39 +109,34 @@ CLASS lhc_Header IMPLEMENTATION.
     DATA(lv_technical_name) = cl_abap_context_info=>get_user_technical_name(  ).
 
     "Crear
-    IF requested_authorizations-%create = if_abap_behv=>mk-on.  "operacion de creacion
-      "validacion por objeto de autorizacion
+    IF requested_authorizations-%create = if_abap_behv=>mk-on.
       IF lv_technical_name = 'CB9980005184'.
-        result-%create = if_abap_behv=>auth-allowed.  "otorgar permisos de creacion
+        result-%create = if_abap_behv=>auth-allowed.
       ELSE.
-        result-%create = if_abap_behv=>auth-unauthorized.  "no autorizamos
-        "aqui podemos invocar una clase de mensaje.
+        result-%create = if_abap_behv=>auth-unauthorized.
       ENDIF.
 
     ENDIF.
 
     "Editar
     IF requested_authorizations-%update = if_abap_behv=>mk-on OR
-       requested_authorizations-%action-Edit = if_abap_behv=>mk-on.  "al presionar un boton, (cambiamos estatus)
+       requested_authorizations-%action-Edit = if_abap_behv=>mk-on.
 
       IF lv_technical_name = 'CB9980005184'.
-        result-%update = if_abap_behv=>auth-allowed.  "otorgar permisos para editar
-        result-%action-Edit = if_abap_behv=>auth-allowed. "otorgar permisos actualizar mediante una accion
+        result-%update = if_abap_behv=>auth-allowed.
+        result-%action-Edit = if_abap_behv=>auth-allowed.
       ELSE.
-        result-%update = if_abap_behv=>auth-unauthorized.  "no autorizamos
+        result-%update = if_abap_behv=>auth-unauthorized.
         result-%action-Edit = if_abap_behv=>auth-unauthorized.
-        "aqui podemos invocar una clase de mensaje.
       ENDIF.
     ENDIF.
 
     "Eliminar
-    IF requested_authorizations-%delete = if_abap_behv=>mk-on.  "operacion de eliminar
-      "validacion por objeto de autorizacion
+    IF requested_authorizations-%delete = if_abap_behv=>mk-on.
       IF lv_technical_name = 'CB9980005184'.
-        result-%delete = if_abap_behv=>auth-allowed.  "otorgar permisos para eliminar
+        result-%delete = if_abap_behv=>auth-allowed.
       ELSE.
-        result-%delete = if_abap_behv=>auth-unauthorized.  "no autorizamos
-        "aqui podemos invocar una clase de mensaje.
+        result-%delete = if_abap_behv=>auth-unauthorized.
       ENDIF.
 
     ENDIF.
