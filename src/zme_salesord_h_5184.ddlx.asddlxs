@@ -1,0 +1,91 @@
+@Metadata.layer: #CORE
+@UI:{
+      headerInfo: { typeName: 'Venta',
+                    typeNamePlural: 'Ventas',
+                    title: { type: #STANDARD,
+                             value: 'HeaderID' } },
+      presentationVariant: [{ sortOrder: [{ by: 'HeaderID',
+                                            direction: #DESC }],
+                              visualizations: [{ type: #AS_LINEITEM }]  }] }
+annotate entity ZSALESORDH_C_5184 with
+{
+  @UI.facet: [{ id: 'Venta',
+                label: 'Venta',
+                type: #IDENTIFICATION_REFERENCE,
+                position: 10
+              },
+             { id: 'Detalle',
+               label: 'Detalle',
+               type: #LINEITEM_REFERENCE,
+               position: 20,
+               targetElement: '_Item'
+              }]
+
+  @UI.hidden: true
+  HeaderUUID;
+
+  @UI: { lineItem: [{ position: 10,
+                      importance: #HIGH,
+                      label: 'Id Venta'
+                    },
+                    { type: #FOR_ACTION,
+                      dataAction: 'acceptOrder',
+                      label: 'Accept Order',
+                      position: 10
+                    },                   
+                    { type: #FOR_ACTION,
+                      dataAction: 'rejectOrder',
+                      label: 'Reject Order',
+                      position: 20
+                    }],
+         identification: [{ position: 10, label: 'Id Venta' },
+                    { type: #FOR_ACTION,
+                      dataAction: 'acceptOrder',
+                      label: 'Accept Order',
+                      position: 10 },                    
+                    { type: #FOR_ACTION,
+                      dataAction: 'rejectOrder',
+                      label: 'Reject Order',
+                      position: 20
+                    }],
+          selectionField: [{ position: 10 }] }
+  HeaderID;
+  @UI: { lineItem: [{ position: 20, importance: #HIGH }], identification: [{ position: 20, label: 'Email' }] }
+  Email;
+  @UI: { lineItem: [{ position: 30, importance: #HIGH }], identification: [{ position: 30, label: 'FirstName' }] }
+  Firstname;
+  @UI: { lineItem: [{ position: 40, importance: #HIGH }], identification: [{ position: 40, label: 'LastName' }] }
+  Lastname;
+  @UI: { lineItem: [{ position: 50, importance: #HIGH }], identification: [{ position: 50, label: 'Country' }] }
+  Country;
+  @UI: { lineItem: [{ position: 60, importance: #HIGH }], identification: [{ position: 60, label: 'CreateOn' }] }
+  Createon;
+  @UI: { lineItem: [{ position: 70, importance: #HIGH }], identification: [{ position: 70, label: 'DeliveryDate' }] }
+  Deliverydate;  
+  @EndUserText.label: 'Order Status'
+  @UI.lineItem: [{ position : 80 }]
+  @UI.identification: [{ position : 80, label : 'Orderstatus' }] 
+  @Consumption.valueHelpDefinition: [{ entity : { name: 'ZVH_STATUS_ORDER_5184', element: 'Code' } }]
+  @UI.selectionField: [{ position : 20 }]
+  Orderstatus;
+  //@UI: { lineItem: [{ position: 90, importance: #MEDIUM }], identification: [{ position: 90, label: 'Imageurl' }] }
+  @UI.lineItem: [{ position: 90 }]
+  @UI.identification: [{ position: 90, label: 'ImagenUrl' }]  
+  Imageurl;
+  
+  @UI.lineItem: [{ position: 100 }]
+  @UI.identification: [{ position: 100, label: 'Logo' }]  
+  ImagePreview;
+   
+  @UI.hidden: true
+  LocalCreateBy;
+  @UI.hidden: true
+  LocalCreateAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+
+}

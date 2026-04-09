@@ -1,0 +1,33 @@
+projection;
+strict ( 2 );
+use draft;
+
+define behavior for ZSALESORDH_C_5184 alias Header
+{
+  use create;
+  use update;
+  use delete;
+
+  use action acceptOrder;
+  use action rejectOrder;
+  use action validateDateRange;
+  use action validateEmails;
+
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _Item { create; with draft; }
+}
+
+define behavior for ZSALESORDI_C_5184 alias Item
+{
+  use update;
+  use delete;
+
+  use action validateDateRange;
+
+  use association _Header { with draft; }
+}

@@ -1,0 +1,126 @@
+managed;
+strict ( 2 );
+with draft;
+
+
+define behavior for ZSALESORDH_R_5184 alias Header
+implementation in class zbp_header_r_5184 unique
+persistent table zsalesord_h_5184
+draft table zsalesord_hd5184
+lock master
+total etag LastChangedAt
+etag master LocalLastChangedAt
+authorization master ( instance, global )
+{
+  create;
+  update;
+  delete;
+  association _Item { create ( features : instance, authorization : update ); with draft; }
+
+  field ( numbering : managed, readonly ) HeaderUUID;
+
+  field ( readonly ) HeaderID,
+  LocalCreateAt,
+  LocalCreateBy,
+  LocalLastChangedAt,
+  LocalLastChangedBy;
+
+  field ( mandatory ) email;
+
+  determination setOrderNumber on save { create; }
+  determination setStatusToOpen on modify { create; }
+
+  action ( features : instance, authorization : update ) acceptOrder result [1] $self;
+  action ( features : instance, authorization : update ) rejectOrder result [1] $self;
+
+  validation validateDates on save { create; field Createon, Deliverydate; }
+  validation validateEmail on save { create; field Email; }
+
+  determine action validateDateRange { validation validateDates; }
+  determine action validateEmails { validation validateEmail; }
+
+  side effects
+  {
+    determine action validateDateRange executed on field Createon, field Deliverydate affects messages;
+    determine action validateEmails executed on field Email affects messages;
+  }
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume with additional implementation;
+
+  draft determine action Prepare
+  {
+    validation validateDates;
+    validation validateEmail;
+    validation Item~validateDate;
+  }
+
+  mapping for zsalesord_h_5184
+    {
+      HeaderUUID         = header_uuid;
+      HeaderID           = header_id;
+      Email              = email;
+      Firstname          = firstname;
+      Lastname           = lastname;
+      Country            = country;
+      Createon           = createon;
+      Deliverydate       = deliverydate;
+      Orderstatus        = orderstatus;
+      Imageurl           = imageurl;
+      LocalCreateBy      = local_create_by;
+      LocalCreateAt      = local_create_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+    }
+
+}
+
+define behavior for ZSALESORDI_R_5184 alias Item
+implementation in class zbp_item_r_5184 unique
+persistent table zsalesord_i_5184
+draft table zsalesord_id5184
+lock dependent by _Header
+authorization dependent by _Header
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  association _Header { with draft; }
+
+  field ( numbering : managed, readonly ) ItemUUID;
+  field ( readonly ) HeaderUUID, ItemID;
+  field ( mandatory ) Price, Quantity, NAME, Description;
+
+  determination setItemNumber on save { create; }
+  determination setItemDate on save { create; }
+
+  validation validateDate on save { create; field Releasedate; }
+
+  determine action validateDateRange { validation validateDate; }
+
+  side effects
+  {
+    determine action validateDateRange executed on field Releasedate affects messages;
+  }
+
+  mapping for zsalesord_i_5184
+    {
+      ItemUUID           = item_uuid;
+      HeaderUUID         = parent_uuid;
+      ItemID             = item_id;
+      Name               = name;
+      Description        = Description;
+      Releasedate        = releasedate;
+      Discontinueddate   = discontinueddate;
+      Price              = price;
+      Height             = height;
+      Width              = width;
+      Depth              = depth;
+      Quantity           = quantity;
+      Unitofmeasure      = unitofmeasure;
+      LocalLastChangedAt = local_last_changed_at;
+    }
+}
